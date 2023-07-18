@@ -1,0 +1,250 @@
+-- 1  
+رقم الرحلة-  المنطلق-    الوجهة-     رقم المكتب-     رقم الباص-   تاريخ الرحلة-    وقت الرحلة-     عدد المقاعد المحجوزة في كل رحلة
+
+SELECT trips.id_Trips,c1.name,c2.name,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time ,COUNT(booking.id_citizens)
+FROM trips JOIN bus ON trips.id_Bus =bus.id_bus
+JOIN office ON bus.id_Office=office.id_office
+JOIN company ON office.id_company=company.id_company
+JOIN booking ON booking.id_Trips=trips.id_Trips
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+GROUP BY trips.id_Trips,bus.id_city1,bus.id_city2,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time;
+
+
+-- 2
+رقم المواطن- اسم الاول- اسم الاب- الكنية- اسم الام- تاريخ الحجز-  رقم الرحلة
+SELECT citizens.id_citizens,citizens.first_NAME,citizens.middle_name,citizens.last_name,citizens.mother_name,booking.DATE_BOOKING,booking.id_Trips
+FROM citizens JOIN booking 
+ON booking.id_citizens=citizens.id_citizens;  
+
+-- 3
+المقاعد المحجوزة في كل رحلة
+SELECT booking.id_desk
+FROM booking WHERE ID_TRIPS=1;
+
+-- 4  
+رقم الرحلة- منطلق الرحلة-  الوجهة-  المكتب- رقم الباص- موعد الرحلة- تارخ الرحلة- عدد الركاب 
+SELECT trips.id_Trips,
+CASE 
+WHEN bus.id_city1=1 THEN 'Aleppo'
+WHEN bus.id_city1=2 THEN 'Homs'
+WHEN bus.id_city1=3 THEN 'Damascus'
+ELSE 'Unknown'
+END AS 'CITY_1',
+CASE 
+WHEN bus.id_city2=1 THEN 'Aleppo'
+WHEN bus.id_city2=2 THEN 'Homs'
+WHEN bus.id_city2=3 THEN 'Damascus'
+ELSE 'Unknown'
+END AS 'CITY_2',
+office.id_office,bus.id_bus,trips.date_trip,trips.trip_time ,COUNT(booking.id_citizens)
+,(bus.size-COUNT(booking.id_citizens)),bus.size
+FROM trips JOIN bus ON trips.id_Bus =bus.id_bus
+JOIN office ON bus.id_Office=office.id_office
+JOIN company ON office.id_company=company.id_company
+JOIN booking ON booking.id_Trips=trips.id_Trips
+GROUP BY trips.id_Trips,bus.id_city1,bus.id_city2,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time;
+
+4-- حل بطريقة -2
+
+SELECT trips.id_Trips,
+city.name AS 'CITY_1',
+CASE 
+WHEN bus.id_city2=1 THEN 'Aleppo'
+WHEN bus.id_city2=2 THEN 'Homs'
+WHEN bus.id_city2=3 THEN 'Damascus'
+ELSE 'Unknown'
+END AS 'CITY_2',
+office.id_office,bus.id_bus,trips.date_trip,trips.trip_time ,COUNT(booking.id_citizens)
+,(bus.size-COUNT(booking.id_citizens)),bus.size
+FROM trips JOIN bus ON trips.id_Bus =bus.id_bus
+JOIN office ON bus.id_Office=office.id_office
+JOIN company ON office.id_company=company.id_company
+JOIN booking ON booking.id_Trips=trips.id_Trips
+JOIN city ON bus.id_city1=city.id_City
+GROUP BY trips.id_Trips,bus.id_city1,bus.id_city2,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time;
+
+
+-- 5
+رقم المكتب-  رقم الباص-  لون الباص-  نوع الباص-  سعة الباص-المنطلق-   الوجهة-   اسم السائق-  اسم مساعد السائق
+SELECT  area.name,bus.id_bus,bus.color,bus.busType,bus.size,c1.name as 'city_1',c2.name as 'city_2',e1.first_NAME as 'e1_name',e2.first_NAME as 'e2_name'
+FROM office,bus,area,city c1,city c2,city,employee e1 ,employee e2 where city.id_City=area.id_City and c1.id_city=bus.id_city1 and c2.id_city =bus.id_city2 and bus.id_Office =office.id_office and e1.id_employee=bus.id_employee1 and e2.id_employee=bus.id_employee2 and area.id_area=office.id_Area
+
+.........................حل بطريقة اخرى...........................
+
+SELECT  office.id_office,bus.id_bus,bus.color,bus.busType,bus.size,
+CASE 
+WHEN bus.id_city1=1 THEN 'Aleppo'
+WHEN bus.id_city1=2 THEN 'Homs'
+WHEN bus.id_city1=3 THEN 'Damascus'
+ELSE 'Unknown'
+END AS 'CITY_1',
+CASE 
+WHEN bus.id_city2=1 THEN 'Aleppo'
+WHEN bus.id_city2=2 THEN 'Homs'
+WHEN bus.id_city2=3 THEN 'Damascus'
+ELSE 'Unknown'
+END AS 'CITY_2',
+CASE 
+WHEN employee.id_jt=3 THEN employee.first_NAME
+ELSE 'Unknown'
+END AS 'Driver',
+CASE 
+WHEN employee.id_jt=4 THEN employee.first_NAME
+ELSE 'Unknown'
+END AS 'driver_assistant'
+FROM office JOIN bus ON bus.id_Office=office.id_office
+JOIN employee ON employee.id_office=office.id_office
+JOIN job_type ON employee.id_jt=job_type.id_jt;
+
+(SELECT trips.id_Trips,COUNT(booking.id_desk)
+FROM booking,trips,office,bus,company WHERE booking.id_Trips=trips.id_Trips and
+ trips.id_Bus=bus.id_bus and office.id_office=bus.id_Office 
+and company.id_company=1 GROUP by trips.id_Trips);
+
+
+6-
+الرحلة-    المنطلق-   الوجهة-  رقم المكتب-   رقم الباص-   تاريخ الرحلة-  وقت الرحلة-   عدد الباصات
+ 
+SELECT trips.id_Trips,c1.name,c2.name,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time ,t.count_bus_sub
+FROM company ,trips,office,bus,booking,city c2,city c1,(SELECT trips.id_Trips as trips_sub,COUNT(booking.id_desk) as count_bus_sub
+FROM booking,trips,office,bus,company WHERE booking.id_Trips=trips.id_Trips and
+ trips.id_Bus=bus.id_bus and office.id_office=bus.id_Office 
+and company.id_company=office.id_company GROUP by trips.id_Trips) t 
+where  office.id_company=company.id_company
+and  bus.id_Office=office.id_office
+and bus.id_bus=trips.id_Trips
+and  t.count_bus_sub<bus.size 
+and trips.id_Trips in ( t.trips_sub)
+and booking.id_Trips=trips.id_Trips
+and bus.id_city1=c1.id_City 
+and  bus.id_city2=c2.id_City
+
+...............حل بطريقة اخرى...............
+
+
+
+ SELECT t.trips_sub,c1.name,c2.name,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time ,t.count_bus_sub
+FROM
+company 
+JOIN office ON office.id_company=company.id_company
+JOIN bus ON bus.id_Office=office.id_office
+join 
+(SELECT trips.id_Trips as trips_sub,COUNT(booking.id_desk) as count_bus_sub
+FROM booking,trips,office,bus,company WHERE booking.id_Trips=trips.id_Trips and
+ trips.id_Bus=bus.id_bus and office.id_office=bus.id_Office 
+and company.id_company=office.id_company GROUP by trips.id_Trips) t on t.count_bus_sub<bus.size JOIN
+ booking ON booking.id_Trips=t.trips_sub
+ join trips on trips.id_Trips=booking.id_Trips
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+GROUP BY t.trips_sub,bus.id_city1,bus.id_city2,office.id_office,bus.id_bus,trips.date_trip,trips.trip_time
+
+7-- اظهار الكل
+
+SELECT
+c1.name AS'CITY_1',c2.name AS 'CITY_2',citizens.id_citizens,citizens.first_NAME,citizens.middle_name,citizens.last_name,
+citizens.mother_name,m.first_NAME AS 'Husband',p.first_NAME AS 'father',citizens.BIRTHDAY_date,citizens.national_number,citizens.mobile,booking.id_desk,
+booking.paid,booking.final_amount,rebate.type_Rebate,rebate.amount_Rebate
+FROM citizens JOIN booking ON booking.id_citizens=citizens.id_citizens
+JOIN rebate ON booking.ID_REBATE=rebate.id_Rebate
+JOIN trips JOIN bus ON trips.id_Bus =bus.id_bus
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+LEFT JOIN citizens m ON M.national_number=citizens.Married_id
+LEFT JOIN citizens p ON P.national_number=citizens.parents_id;
+
+
+8-- إظهار الأفراد فقط
+
+SELECT
+c1.name AS'CITY_1',c2.name AS 'CITY_2',citizens.id_citizens,citizens.first_NAME,citizens.middle_name,citizens.last_name,
+citizens.mother_name,p.first_NAME AS 'father',citizens.BIRTHDAY_date,citizens.national_number,citizens.mobile,booking.id_desk,
+booking.paid,booking.final_amount,rebate.type_Rebate,rebate.amount_Rebate
+FROM citizens JOIN booking ON booking.id_citizens=citizens.id_citizens
+JOIN rebate ON booking.ID_REBATE=rebate.id_Rebate
+JOIN trips JOIN bus ON trips.id_Bus =bus.id_bus
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+LEFT JOIN citizens p ON P.national_number=citizens.parents_id
+where  citizens.Married_id  is null
+
+
+
+9-- إظهار الأزواج 
+
+SELECT
+c1.name AS'CITY_1',c2.name AS 'CITY_2',citizens.id_citizens,citizens.first_NAME,citizens.middle_name,citizens.last_name,
+citizens.mother_name,p.first_NAME AS 'father',citizens.BIRTHDAY_date,citizens.national_number,citizens.mobile,booking.id_desk,
+booking.paid,booking.final_amount,rebate.type_Rebate,rebate.amount_Rebate
+FROM citizens JOIN booking ON booking.id_citizens=citizens.id_citizens
+JOIN rebate ON booking.ID_REBATE=rebate.id_Rebate
+JOIN trips JOIN bus ON trips.id_Bus =bus.id_bus
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+LEFT JOIN citizens p ON P.national_number=citizens.parents_id
+where  citizens.Married_id  is not null
+
+
+10-- مدير الشركة-  اجمالي المكاتب-   اجمالي الباصات-   اجمالي الرحلات الواصلة-    اجمالي الرحلات-   اجمالي المسافرين
+
+SELECT DISTINCT employee.first_NAME,
+(SELECT COUNT(office.id_office) FROM office),
+(SELECT COUNT(bus.id_bus)FROM bus),
+(SELECT COUNT(trips.id_Trips) FROM trips WHERE trips.Done=1 ),
+(SELECT COUNT(trips.id_Trips) FROM trips),
+(SELECT COUNT(citizens.id_citizens) FROM citizens)
+FROM employee JOIN office ON employee.id_office=office.id_office
+JOIN company ON office.id_company=company.id_company
+WHERE employee.id_jt=1
+
+رقم المكتب- منطقة المكتب- رقم- موبايل- رقم الارضي- عدد الموظفين فيه- مدينة حلب
+
+SELECT office.id_office,area.name,office.mobile,office.phone,COUNT(employee.id_employee),city.name
+FROM office JOIN company ON office.id_company=company.id_company
+JOIN area ON office.id_Area=area.id_area
+JOIN city ON area.id_City=city.id_City
+JOIN employee ON employee.id_office=office.id_office
+WHERE city.name ='حلب' AND company.id_company=1
+
+
+ - رقم الموظف-  اسم الموظف- اسم الاب-  الكنية-  نوع الوظيفة-  الراتب الشهري -   المبلغ المقبوض
+
+SELECT employee.id_employee,employee.first_NAME,employee.father_name,employee.sur_name,job_type.NAME,employee.salary_total,employee.salary
+FROM employee JOIN job_type ON employee.id_jt=job_type.id_jt
+JOIN office ON employee.id_office=office.id_office
+WHERE office.id_office=1
+
+رقم السائق-  اسم سائق-  اسم الاب-  الكنية-  نوع الوظيفة-  عدد الساعات-  سعر الساعة-  المبلغ الكامل-  المبلغ  
+
+SELECT employee.id_employee,employee.first_NAME,employee.father_name,employee.sur_name,job_type.NAME,employee.work_hours,employee.hours_price,
+employee.salary_total,employee.salary
+FROM employee JOIN job_type ON employee.id_jt=job_type.id_jt
+
+-----رقم الرحلة -  المنطلق-  الوجهة-    تاريخ الرحلة-  وقت الرحلة- منطقة المكتب-  المبلغ المدفوع-  المبلغ المطلوب ----
+حسب رقم الوطني
+                  
+            ------الكل---------
+SELECT trips.id_Trips,C1.name,C2.name,trips.date_trip,trips.trip_time,area.name,booking.paid,(booking.final_amount-booking.paid)
+FROM trips JOIN bus ON trips.id_Bus=bus.id_bus
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+JOIN booking ON booking.id_Trips=trips.id_Trips
+JOIN office ON bus.id_Office=office.id_office
+JOIN area ON office.id_Area=area.id_area
+JOIN citizens ON booking.id_citizens=citizens.id_citizens
+WHERE citizens.national_number
+
+        ---------الرحلات المحجوزة------------
+SELECT trips.id_Trips,C1.name,C2.name,trips.date_trip,trips.trip_time,area.name,booking.paid,(booking.final_amount-booking.paid)
+FROM trips JOIN bus ON trips.id_Bus=bus.id_bus
+join city c1 on bus.id_city1=c1.id_City 
+join city c2 on bus.id_city2=c2.id_City
+JOIN booking ON booking.id_Trips=trips.id_Trips
+JOIN office ON bus.id_Office=office.id_office
+JOIN area ON office.id_Area=area.id_area
+JOIN citizens ON booking.id_citizens=citizens.id_citizens
+WHERE trips.Done=1
+
+
+

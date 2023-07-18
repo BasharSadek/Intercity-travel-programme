@@ -1,0 +1,373 @@
+DROP DATABASE IF EXISTS travelbetweencities;
+CREATE DATABASE IF NOT EXISTS TravelBetweenCities; USE
+    TravelBetweenCities;
+    
+    
+    
+-- انشاء جدول محافظة واضاة سجلات له 
+CREATE TABLE Governorate(
+id_Governorate INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(30)
+);
+INSERT INTO Governorate VALUES(NULL,'حلب');
+INSERT INTO Governorate VALUES(NULL,'إدلب');
+INSERT INTO Governorate VALUES(NULL,'الشام');
+INSERT INTO Governorate VALUES(NULL,'حماة');
+INSERT INTO Governorate VALUES(NULL,'الحسكة');
+INSERT INTO Governorate VALUES(NULL,'دير الزور');
+INSERT INTO Governorate VALUES(NULL,'الرقة');
+INSERT INTO Governorate VALUES(NULL,'درعا');
+INSERT INTO Governorate VALUES(NULL,'الاذقية');
+INSERT INTO Governorate VALUES(NULL,'طرطوس');
+INSERT INTO Governorate VALUES(NULL,'الشام');
+INSERT INTO Governorate VALUES(NULL,'السويداء');
+INSERT INTO Governorate VALUES(NULL,'القنيطرة');
+
+
+
+
+-- انشاء جدول مدينة واضافة سجلات له
+CREATE TABLE City(
+id_City INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  id_Governorate INT ,  
+  name VARCHAR(20),
+  
+     CONSTRAINT City_FORIGN_KEY FOREIGN KEY (id_Governorate) REFERENCES Governorate(id_Governorate)
+);
+INSERT INTO  City VALUES(NULL, 1,'حلب'  );
+INSERT INTO City VALUES(NULL, 1,'عفرين'  );
+INSERT INTO  City VALUES(NULL, 1,'الأتارب'  );
+INSERT INTO  City VALUES(NULL, 1,'منبج'  );
+INSERT INTO  City VALUES(NULL, 1,'السفيرة'  );
+INSERT INTO  City VALUES(NULL, 1,'اعزاز'  );
+INSERT INTO  City VALUES(NULL, 1,'الباب'  );
+INSERT INTO  City VALUES(NULL, 1,'العيس'  );
+INSERT INTO  City VALUES(NULL, 1,'الحاضر'  );
+INSERT INTO  City VALUES(NULL, 2,'ادلب'  );
+INSERT INTO  City VALUES(NULL, 2,'سراقب'  );
+INSERT INTO  City VALUES(NULL, 2,'معرة النعمان'  );
+INSERT INTO  City VALUES(NULL, 2,'خان شيخون'  );
+INSERT INTO  City VALUES(NULL, 2,'بنش'  );
+INSERT INTO  City VALUES(NULL, 2,'تفتناز'  );
+
+
+
+
+-- انشاء جدول منطقة واضافة سجلات له 
+CREATE TABLE Area (
+id_area INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_City INT,   
+ name VARCHAR(30),
+    
+    CONSTRAINT Area_FORIGN_KEY FOREIGN KEY (id_City) REFERENCES City(id_City)
+);
+INSERT INTO Area  VALUES (NULL,1,'الفيض');
+INSERT INTO Area  VALUES (NULL,1,'الجميلية');
+INSERT INTO Area  VALUES (NULL,1,'حلب جديدة');
+INSERT INTO Area  VALUES (NULL,1,'حمدانية');
+INSERT INTO Area  VALUES (NULL,1,'أدونيس');
+INSERT INTO Area  VALUES (NULL,1,'الراموسة');
+INSERT INTO Area  VALUES (NULL,1,'المرديان');
+INSERT INTO Area  VALUES (NULL,1,'العزيزية');
+INSERT INTO Area  VALUES (NULL,1,'حمدانية');
+INSERT INTO Area  VALUES (NULL,11,'الحارة الشمالية');
+INSERT INTO Area  VALUES (NULL,11,'الحارة الجنوبية');
+INSERT INTO Area  VALUES (NULL,11,'الحارة الشرقية');
+INSERT INTO Area  VALUES (NULL,11,'الحارة الجنوبية');
+
+
+-- انشاء جدول شركة واضافة سجلات له 
+CREATE TABLE Company(
+    id_company INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+user_name varchar(15),
+password varchar (15),
+  Date_Created date, 
+ NAME VARCHAR(30)
+    
+);
+INSERT INTO Company VALUES(NULL,'alsra','123', '1999-1-19','السراج');
+INSERT INTO Company VALUES(NULL, 'fam','321','2000-1-1','الأهلية');
+
+
+-- انشاء جدول حسومات واضافة سجلات له 
+CREATE TABLE Rebate(
+    id_Rebate INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    type_Rebate VARCHAR(30) not null,
+    amount_Rebate double 
+);
+INSERT INTO Rebate VALUES(NULL, 'Student',0.23);
+INSERT INTO Rebate VALUES(NULL, 'employee',0.32);
+
+
+-- انشاء جدول شركة_حسومات واضافة سجلات له
+CREATE TABLE company_Rebate(
+    id_CR INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id_Rebate INT not null,
+    id_company INT not null,
+        CONSTRAINT company_Rebate_FORIGN_KEY1 FOREIGN KEY (id_Rebate ) REFERENCES Rebate(  id_Rebate),
+        CONSTRAINT company_Rebate_FORIGN_KEY2 FOREIGN KEY (id_company ) REFERENCES Company(id_company )
+); 
+INSERT INTO company_Rebate VALUES(NULL, 1, 1);
+INSERT INTO company_Rebate VALUES(NULL, 2, 1);
+INSERT INTO company_Rebate VALUES(NULL, 1, 2);
+
+
+
+
+
+
+    -- انشاء جدول تعليمات واضافة سجلات له
+CREATE TABLE Instructions(
+    id_Instructions INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id_company INT not null,
+    NAME VARCHAR(70) not null,
+    CONSTRAINT Instructions_FORIGN_KEY FOREIGN KEY (id_company ) REFERENCES Company(id_company)
+); 
+INSERT INTO Instructions VALUES(NULL, 1, "ممنوع التأخر عن موعد الرحلة");
+INSERT INTO Instructions VALUES(NULL, 1,"ممنوع التدخين");
+INSERT INTO Instructions VALUES(NULL,1,"ممنوع رمي النفايات في الباص"); 
+
+
+
+
+-- انشاء جدول مكتب واضافة سجلات له
+CREATE TABLE Office(
+    id_office INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    officeType INT not null,
+    phone INT not null,
+    mobile INT not null,
+    id_company int not null,
+    id_Area INT ,
+     CONSTRAINT Office_FORIGN_KEY1 FOREIGN KEY (id_company) REFERENCES Company(id_company),
+     CONSTRAINT Office_FORIGN_KEY2 FOREIGN KEY (id_Area) REFERENCES Area(id_area)
+); 
+INSERT INTO Office VALUES(NULL,1,829473 ,096248264,1, 1);
+INSERT INTO Office VALUES(NULL,1,13139,092384628, 1, 2);
+INSERT INTO Office VALUES(NULL, 2,836193,09772262,2, 3);
+INSERT INTO Office VALUES(NULL,2,915642,097184621,1, 4);
+INSERT INTO Office VALUES(NULL, 3,927421,09711762,2, 5);
+INSERT INTO Office VALUES(NULL, 2,917341,09438742,2, 6);
+
+
+    -- انشاء جدول نوع وظيفة مع اضافة سجلات له
+CREATE TABLE job_type(
+    id_jt INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    NAME VARCHAR(25)
+); 
+INSERT INTO job_type VALUES(NULL, 'مدير شركة');
+INSERT INTO job_type VALUES(NULL, 'مدير مكتب');
+INSERT INTO job_type VALUES(NULL, 'سائق');
+INSERT INTO job_type VALUES(NULL, 'سائق مساعد');
+INSERT INTO job_type VALUES(NULL, 'موظف تسجيل بيانات');
+INSERT INTO job_type VALUES(NULL, 'موظف استقبال');
+INSERT INTO job_type VALUES(NULL, 'موظف شكاوي');
+INSERT INTO job_type VALUES(NULL, 'موظف استقبال');
+INSERT INTO job_type VALUES(NULL, 'محاسب عام');
+INSERT INTO job_type VALUES(NULL, 'موظف قطع تذاكر');
+
+
+
+
+
+-- انشاء جدول موظف مع اضافة سجلات له
+CREATE TABLE employee(
+    id_employee INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    first_NAME VARCHAR(25) not null,
+    father_name VARCHAR(25) not null,
+    sur_name VARCHAR(25) not null,  
+    id_jt INT,
+    id_office INT,
+    work_hours int ,
+   Monthly_salary double ,
+    Hourly_rate double,
+    fully_amount double,
+    amount_received double,
+     CONSTRAINT employee_FORIGN_KEY1 FOREIGN KEY (id_jt ) REFERENCES job_type(id_jt),
+     CONSTRAINT employee_FORIGN_KEY2 FOREIGN KEY (id_office) REFERENCES Office(id_office),
+      CONSTRAINT Reserve_UNIQUE UNIQUE ( id_jt,  id_office)
+);
+INSERT INTO employee VALUES(NULL, 'Ahmad','Ali','Omar', 1, 2,null,2742,null,2742,0);
+INSERT INTO employee VALUES(NULL, 'Ali','Fadi','Abdo', 2, 2,2,null,2000,4000,0);
+INSERT INTO employee VALUES(NULL, 'Khaled','Naser','Malek', 1, 3,2,null,2000,4000,0);
+INSERT INTO employee VALUES(NULL, 'Ahmad','Ali','Omar', 3, 1,null,2742,null,2742,0);
+INSERT INTO employee VALUES(NULL, 'Ahmad','Dani','Youssef',3 , 5,2,null,2000,4000,0);
+INSERT INTO employee VALUES(NULL, 'Amjad','Rami','Bashir', 3, 3,2,null,2000,4000,0);
+INSERT INTO employee VALUES(NULL, 'Bashir','Rami','Samer', 4, 2,2,null,2000,4000,0);
+
+
+
+
+
+
+
+-- انشاء جدول باص واضافة سجلات له 
+CREATE TABLE Bus(
+id_bus INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    color VARCHAR(30),
+    number_bus INT,
+    size INT,
+    busType Boolean,
+    id_Office INT,
+    id_employee1 INT,
+    id_employee2 INT ,
+    id_city1 INT,
+    id_city2 INT,
+    COST_trips int,
+     CONSTRAINT Bus_FORIGN_KEY1 FOREIGN KEY (id_Office) REFERENCES Office(id_office),
+     CONSTRAINT Bus_FORIGN_KEY2 FOREIGN KEY (id_employee1 ) REFERENCES employee(id_employee),
+     CONSTRAINT Bus_FORIGN_KEY3 FOREIGN KEY (id_employee2) REFERENCES employee(id_employee),
+      CONSTRAINT Bus_FORIGN_KEY4 FOREIGN KEY (id_city1 ) REFERENCES city(id_city),
+      CONSTRAINT Bus_FORIGN_KEY5 FOREIGN KEY (id_city2 ) REFERENCES City(id_city),
+CONSTRAINT Reserve_UNIQUE UNIQUE ( id_employee1, id_employee2,id_Office)
+);
+INSERT INTO Bus VALUES(NULL, 'Black',10,24,0,1,1,3,1,2,4000);
+INSERT INTO Bus VALUES(NULL, 'blue',5,24,1,2,1,4,2,1,4000);
+INSERT INTO Bus VALUES(NULL, 'red',6,24,1,3,1,2,1,3,4000);
+INSERT INTO Bus VALUES(NULL, 'black',2,24,0,4,2,3,3,2,4000);
+INSERT INTO Bus VALUES(NULL, 'blue',4,24,1,5,1,2,2,1,4000);
+INSERT INTO Bus VALUES(NULL, 'yellow',6,24,0,6,1,2,3,1,4000);
+
+
+-- انشاء جدول رحلة واضافة سجلات له 
+CREATE TABLE Trips(
+    id_Trips INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id_Bus INT,
+    date_trip DATE,
+    trip_time TIME,
+    trip_duration time,
+    Done Boolean,
+    CONSTRAINT Journey_FORIGN_KEY1 FOREIGN KEY (id_Bus) REFERENCES Bus(id_bus)
+    
+);
+INSERT INTO Trips VALUES(NULL,2,'2021-5-1','2:15','2:00',0);
+INSERT INTO Trips VALUES(NULL,1,'2021-5-1','2:15','2:00',1);
+INSERT INTO Trips VALUES(NULL,3,'2021-5-1','2:15','2:00',1);
+INSERT INTO Trips VALUES(NULL,4,'2021-5-1','2:15','2:00',1);
+INSERT INTO Trips VALUES(NULL,5,'2021-5-1','2:15','2:00',0);
+INSERT INTO Trips VALUES(NULL,6,'2021-6-1','2:15','2:00',1);
+INSERT INTO Trips VALUES(NULL,4,'2021-6-1','2:15','2:00',1);
+
+
+
+
+-- انشاء جدول مواطنون واضافة سجلات له 
+CREATE TABLE citizens(
+id_citizens INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+      first_NAME VARCHAR(25),
+     middle_name VARCHAR(25),
+    last_name VARCHAR(25), 
+    gender boolean,
+    Married_id INT,
+    parents_id INT,
+    BIRTHDAY_date DATE,
+    mobile INT,
+    national_number INT UNIQUE,
+    id_City INT,
+    mother_name VARCHAR(24),
+    CONSTRAINT citizens_FORIGN_KEY1 FOREIGN KEY (id_City) REFERENCES City(id_city),
+    CONSTRAINT citizens_FORIGN_KEY2 FOREIGN KEY (Married_id) REFERENCES citizens(national_number),
+    CONSTRAINT citizens_FORIGN_KEY3 FOREIGN KEY (parents_id) REFERENCES citizens(national_number)
+    
+);
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar',0,NULL,NULL,'2020-2-2',743724,12,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Nadia','Fadi','Abdo',1,12, NULL,'2021-2-3',092711616,1213,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar', 0,NULL,null,'2019-3-1',09273724,1234,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Dani','Youssef',0,NULL,NULL,'2021-3-2',0927327424,12345,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Amjad','Rami','Bashir',0 ,NULL,NULL,'2018-2-5',091272422,123456,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Bashir','Rami','Samer',0,NULL,123456,'2017-3-4',8228482482,1234567,3,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar',0,NULL,NULL,'2020-2-2',743724,12345678,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Nadia','Fadi','Abdo',1,12345678, NULL,'2021-2-3',092711616,123456789,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar', 0,NULL,NULL,'2019-3-1',09273724,98,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ali','Dani','Youssef',0,NULL,NULL,'2021-3-2',0927327424,9876,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Amjad','Rami','Bashir',0 ,NULL,NULL,'2018-2-5',091272422,98765,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'malek','Rami','Samer',0,NULL,NULL,'2017-3-4',8228482482,987654,3,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar',0,NULL,NULL,'2020-2-2',743724,9876543,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Sara','Fadi','Abdo',1,123456, NULL,'2021-2-3',092711616,54,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar', 0,NULL,null,'2019-3-1',09273724,543,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'naji','Dani','Youssef',0,NULL,543,'2021-3-2',0927327424,544342,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Amjad','Rami','Bashir',0 ,NULL,NULL,'2018-2-5',091272422,56,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Bashir','Rami','Samer',0,NULL,NULL,'2017-3-4',8228482482,567,3,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar',0,NULL,NULL,'2020-2-2',743724,5678,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'JANA','Fadi','Abdo',1,NULL, NULL,'2021-2-3',092711616,56789,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Ali','Omar', 0,NULL,NULL,'2019-3-1',09273724,567891,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Ahmad','Dani','Youssef',0,NULL,NULL,'2021-3-2',0927327424,5678912,2,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Amjad','Rami','Bashir',0 ,NULL,NULL,'2018-2-5',091272422,543219,1,'SJJSHF');
+INSERT INTO citizens VALUES(NULL, 'Bashir','Rami','Samer',0,NULL,543219,'2017-3-4',8228482482,5432178,3,'SJJSHF');
+
+
+
+-- انشاء جدول حجز واضافة سجلات له
+CREATE TABLE booking(
+   id_booking INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+   id_citizens INT ,
+   id_Trips INT ,
+   Done Boolean,
+   DATE_BOOKING TIME,
+   ID_REBATE INT,
+   BOOKING_DATE DATE, 
+   id_desk INT ,
+   paid INT,
+   final_amount INT ,
+     CONSTRAINT Reserve_FORIGN_KEY1 FOREIGN KEY (id_citizens) REFERENCES citizens(id_citizens),
+     CONSTRAINT Reserve_FORIGN_KEY2 FOREIGN KEY (id_Trips) REFERENCES Trips(id_Trips)  ,
+     CONSTRAINT Reserve_FORIGN_KEY3 FOREIGN KEY (ID_REBATE ) REFERENCES REBATE(id_REBATE),
+     CONSTRAINT Reserve_UNIQUE UNIQUE (id_trips,id_citizens)
+    
+);
+INSERT INTO booking VALUES (NULL,1,1,0,'2:43',1,'2021-1-2',null,2000,4000);
+INSERT INTO booking VALUES (NULL,2,1,1,'2:43',1,'2021-1-2',4,2000,4000);
+INSERT INTO booking VALUES (NULL,3,1,1,'2:43',1,'2021-1-2',3,2000,4000);
+INSERT INTO booking VALUES (NULL,4,1,1,'2:43',1,'2021-1-2',1,2000,4000);
+INSERT INTO booking VALUES (NULL,5,1,0,'2:43',1,'2021-1-2',2,2000,4000);
+INSERT INTO booking VALUES (NULL,6,1,0,'2:43',1,'2021-1-2',2,2000,4000);
+INSERT INTO booking VALUES (NULL,7,1,1,'2:43',1,'2021-1-2',4,2000,4000);
+INSERT INTO booking VALUES (NULL,8,1,1,'2:43',1,'2021-1-2',null,2000,4000);
+INSERT INTO booking VALUES (NULL,9,1,1,'2:43',1,'2021-1-2',1,2000,4000);
+INSERT INTO booking VALUES (NULL,10,1,0,'2:43',1,'2021-1-2',null,2000,4000);
+
+INSERT INTO booking VALUES (NULL,11,1,0,'2:43',1,'2021-1-2',2,2000,4000);
+INSERT INTO booking VALUES (NULL,12,1,1,'2:43',1,'2021-1-2',4,2000,4000);
+INSERT INTO booking VALUES (NULL,13,1,1,'2:43',1,'2021-1-2',3,1000,4000);
+INSERT INTO booking VALUES (NULL,14,1,1,'2:43',1,'2021-1-2',1,2000,4000);
+INSERT INTO booking VALUES (NULL,15,1,2,'2:43',1,'2021-1-2',2,2000,4000);
+
+INSERT INTO booking VALUES (NULL,16,1,0,'2:43',1,'2021-1-2',null,2000,4000);
+INSERT INTO booking VALUES (NULL,17,1,1,'2:43',1,'2021-1-2',4,2000,4000);
+INSERT INTO booking VALUES (NULL,18,1,1,'2:43',1,'2021-1-2',null,3000,4000);
+INSERT INTO booking VALUES (NULL,19,1,1,'2:43',1,'2021-1-2',1,2000,4000);
+INSERT INTO booking VALUES (NULL,20,1,0,'2:43',1,'2021-1-2',2,2000,4000);
+INSERT INTO booking VALUES (NULL,21,1,0,'2:43',1,'2021-1-2',null,2000,4000);
+INSERT INTO booking VALUES (NULL,22,1,1,'2:43',1,'2021-1-2',4,3000,4000);
+INSERT INTO booking VALUES (NULL,23,1,1,'2:43',1,'2021-1-2',null,2000,4000);
+INSERT INTO booking VALUES (NULL,24,1,1,'2:43',1,'2021-1-2',1,3500,4000);
+INSERT INTO booking VALUES (NULL,1,4,0,'2:43',1,'2021-1-2',null,1000,4000);
+
+
+
+
+-- انشاء جدول شكاوي واضافة سجلات له 
+CREATE TABLE Peeps(
+id_Peeps INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(40)
+);
+insert into peeps VALUES (null,'انعدام النظافة في الباص');
+insert into peeps VALUES (null,'التأخر في المواعيد');
+insert into peeps VALUES (null,'السرعة الزائدة من الشوفير');
+insert into peeps VALUES (null,'سوء الخدمة');
+insert into peeps VALUES (null,'الفوضى العامة في الباص');
+insert into peeps VALUES (null,'غير ذلك');
+
+
+
+-- انشاء جدول حجز_شكاوي واضافة سجلات له
+CREATE TABLE Reserve_Peeps(
+id_RP INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+   id_booking INT ,
+    id_Peeps INT ,
+    CONSTRAINT FORIGN_KEY1 FOREIGN KEY (id_booking ) REFERENCES booking(id_booking),
+    CONSTRAINT FORIGN_KEY2 FOREIGN KEY (id_Peeps) REFERENCES Peeps(id_Peeps)
+);
+INSERT INTO Reserve_Peeps VALUES (NULL,1,1);
+INSERT INTO Reserve_Peeps VALUES (NULL,1,2);
+INSERT INTO Reserve_Peeps VALUES (NULL,2,1);
+INSERT INTO Reserve_Peeps VALUES (NULL,2,2);
